@@ -5,22 +5,12 @@ variable "bucket_prefix" {
 }
 
 variable "tags" {
-  type        = map
+  type        = map(any)
   description = "bucket tag"
   default = {
     environment = "DEV"
     terraform   = "true"
   }
-}
-variable "versioning" {
-  type        = bool
-  description = "bucket versioning."
-  default     = true
-}
-variable "acl" {
-  type        = string
-  description = " Defaults to private "
-  default     = "private"
 }
 
 variable "ingressrules" {

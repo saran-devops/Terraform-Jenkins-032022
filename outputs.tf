@@ -13,3 +13,6 @@ output "s3_bucket_region" {
   value = aws_s3_bucket.my-s3-bucket.region
 }
 
+output "subnet_ec2_instance" {
+  value = aws_instance.jenkins.subnet_id
+}

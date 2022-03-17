@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage ("checkout from GIT") {
             steps {
-             git branch: 'master', credentialsId: 'saranlang', url: 'https://github.com/saran-devops/testing-jenkins-terraform.git'
+             git branch: 'master', credentialsId: 'saranlang', url: 'https://github.com/saran-devops/Terraform-Jenkins-032022.git'
             }
         }
         stage ("terraform init") {

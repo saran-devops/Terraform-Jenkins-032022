@@ -1,23 +1,30 @@
 provider "aws" {
-  profile = "default"
-  region  = "us-east-1"
+  region  = "us-east-2"
 }
 
 resource "aws_default_vpc" "default" {
-
 }
 
 
 resource "aws_s3_bucket" "my-s3-bucket" {
   bucket_prefix = var.bucket_prefix
-  acl           = var.acl
-
-  versioning {
-    enabled = var.versioning
+  tags = {
+    Name = "AWS-S3-Bucket"
   }
-
-  tags = var.tags
 }
+
+resource "aws_s3_bucket_acl" "my-s3-bucket-acl" {
+  bucket = aws_s3_bucket.my-s3-bucket.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_versioning" "versioning_s3_bucket" {
+  bucket = aws_s3_bucket.my-s3-bucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
 
 resource "aws_security_group" "web_traffic" {
   name        = "Allow web traffic"
@@ -49,10 +56,10 @@ resource "aws_security_group" "web_traffic" {
 
 resource "aws_instance" "jenkins" {
   ami                    = data.aws_ami.ubuntu.id
-  instance_type          = "t2.micro"
+  instance_type          = "t2.large"
   vpc_security_group_ids = [aws_security_group.web_traffic.id]
-  subnet_id              = tolist(data.aws_subnet_ids.default_subnets.ids)[0]
-  key_name               = "ubuntu-tf"
+  subnet_id              = tolist(data.aws_subnets.default_subnets.ids)[0]
+  key_name               = "ubuntukey"
 
   provisioner "remote-exec" {
     inline = [
@@ -80,7 +87,7 @@ resource "aws_instance" "jenkins" {
     type        = "ssh"
     host        = self.public_ip
     user        = "ubuntu"
-    private_key = file("~/ubuntu-tf.pem")
+    private_key = file("~/ubuntukey.pem")
   }
 
   tags = {
